@@ -8,9 +8,33 @@
 <body>
     <h2>Request a Service</h2>
 
-    <!-- The content of the request service page goes here -->
+    <!-- Table displaying the list of available services -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Points</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Thymeleaf will loop through the services passed from the controller -->
+            <tr th:each="service : ${services}">
+                <td th:text="${service.title}"></td>
+                <td th:text="${service.description}"></td>
+                <td th:text="${service.points}"></td>
+                <td>
+                    <!-- Request Service Form -->
+                    <form th:action="@{/request-service/{serviceId}(serviceId=${service.id})}" method="post">
+                        <button type="submit">Request</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-    <!-- [BACK] Button -->
+    <!-- [BACK] Button to go to the previous page -->
     <button onclick="goBack()">[BACK]</button>
 
     <script>

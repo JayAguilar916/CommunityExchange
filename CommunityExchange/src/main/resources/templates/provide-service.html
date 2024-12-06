@@ -6,26 +6,35 @@
     <title>Provide Service</title>
 </head>
 <body>
-    <h2>Your Services</h2>
+    <h2>Services You Provide</h2>
 
-    <!-- [Create Service] Button -->
-    <a href="/create-service">
-        <button>Create Service</button>
-    </a>
+    <!-- Table displaying the list of services provided by the logged-in user -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Points</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Thymeleaf will loop through the services passed from the controller -->
+            <tr th:each="service : ${services}">
+                <td th:text="${service.title}"></td>
+                <td th:text="${service.description}"></td>
+                <td th:text="${service.points}"></td>
+                <td>
+                    <!-- Approve Service Form -->
+                    <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+                        <button type="submit">Approve</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-    <!-- List of services -->
-    <h3>Your Offered Services:</h3>
-    <ul>
-        <!-- Loop through the services provided by the user -->
-        <th:block th:each="service : ${services}">
-            <li>
-                <strong th:text="${service.title}"></strong>: 
-                <span th:text="${service.description}"></span> - 
-                <span th:text="${service.points}">Points</span>
-            </li>
-        </th:block>
-    </ul>
-
+    <!-- [BACK] Button to go to the previous page -->
     <button onclick="goBack()">[BACK]</button>
 
     <script>
@@ -33,5 +42,6 @@
             window.history.back();  // This will navigate the user to the previous page
         }
     </script>
+
 </body>
 </html>
