@@ -19,13 +19,13 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Loop through the services provided by the logged-in user -->
+<!--             Loop through the services provided by the logged-in user -->
             <tr th:each="service : ${services}">
                 <td th:text="${service.title}"></td>
                 <td th:text="${service.description}"></td>
                 <td th:text="${service.points}"></td>
                 <td>
-                    <!-- Display the status of the service request -->
+<!--                     Display the status of the service request -->
                     <div th:if="${service.pendingRequest != null}">
                         <p th:text="${service.pendingRequest.status}"></p>
                     </div>
@@ -34,7 +34,7 @@
                     </div>
                 </td>
                 <td>
-                    <!-- Always render the Approve button if there is a pending request -->
+<!--                     Always render the Approve button if there is a pending request -->
                     <div th:if="${service.pendingRequest != null}">
 						<form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
 						    <button type="submit">Approve</button>
@@ -45,10 +45,10 @@
         </tbody>
     </table>
 
-    <!-- Button to create a new service -->
+<!--     Button to create a new service -->
     <button onclick="window.location.href='/create-service'">Create Service</button>
     
-    <!-- Back button to go back to the Dashboard -->
+<!--     Back button to go back to the Dashboard -->
     <button onclick="window.location.href='/dashboard'">BACK</button>
 
 </body>
