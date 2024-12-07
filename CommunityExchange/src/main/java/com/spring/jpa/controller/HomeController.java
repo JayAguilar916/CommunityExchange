@@ -146,8 +146,6 @@ public class HomeController {
         return "redirect:/request-service";
     }
 
-    
-    // Approve the service request (Usera clicks "Approve" button)
     @PostMapping("/approve-service/{serviceId}")
     public String approveService(@PathVariable Long serviceId, Model model) {
         Service service = serviceRepository.findById(serviceId).orElse(null);
@@ -160,46 +158,26 @@ public class HomeController {
             return "redirect:/provide-service";  // Redirect if no user is logged in
         }
 
-        // Find the pending service request for the service and provider
+        // Log the details of the service and logged-in user to debug
+        System.out.println("Approving service request for serviceId: " + serviceId + " by user: " + loggedInUser.getUsername());
+
+        // Find the first pending service request for the specified service
         ServiceRequest serviceRequest = serviceRequestRepository
-                .findByServiceAndUserAndStatus(service, loggedInUser, ServiceRequest.Status.Pending);
+                .findByServiceAndStatus(service, ServiceRequest.Status.Pending);
 
         if (serviceRequest != null) {
-            // Update the status to "ACCEPTED"
+            System.out.println("Found pending request for service: " + service.getTitle() + " from user: " + serviceRequest.getUser().getUsername());
+
+            // Update the status to "ACCEPTED" regardless of who requested
             serviceRequest.setStatus(ServiceRequest.Status.Accepted);
             serviceRequestRepository.save(serviceRequest);  // Save the updated request
+            System.out.println("Service request status updated to ACCEPTED.");
+        } else {
+            System.out.println("No pending request found for service: " + service.getTitle());
         }
 
         return "redirect:/provide-service";  // Redirect back to the provider's service page
     }
-    
-    // Show the Provide Service page
-//    @GetMapping("/provide-service")
-//    public String showProvideServicePage(Model model) {
-//        User user = (User) model.getAttribute("user");
-//
-//        if (user == null) {
-//            return "redirect:/login";  // Redirect to login if no user is logged in
-//        }
-//
-//        // Fetch the services provided by the logged-in user
-//        List<Service> services = serviceRepository.findByUser(user);
-//
-//        // Fetch the pending requests for each service
-//        for (Service service : services) {
-//            ServiceRequest request = serviceRequestRepository
-//                    .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
-//
-//            if (request != null) {
-//                service.setPendingRequest(request);  // Associate the pending request with the service
-//            } else {
-//                System.out.println("No pending request found for service: " + service.getTitle());
-//            }
-//        }
-//
-//        model.addAttribute("services", services);  // Add services to the model
-//        return "provide-service";  // Return the provide-service view
-//    }
     
     @GetMapping("/provide-service")
     public String showProvideServicePage(Model model) {
@@ -211,25 +189,30 @@ public class HomeController {
         // Fetch the services provided by the logged-in user
         List<Service> services = serviceRepository.findByUser(user);
 
-        // Add services to the model
-        model.addAttribute("services", services);
-
-        // Check for pending requests and add to each service (only for display purposes)
+        // Fetch the pending requests for each service from the database
         for (Service service : services) {
+            // Retrieve the pending request from the service_request table
             ServiceRequest pendingRequest = serviceRequestRepository
-                .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
+                .findByServiceAndStatus(service, ServiceRequest.Status.Pending);
 
+            // Log the status of the request to verify if the data is correct
             if (pendingRequest != null) {
-                service.setPendingRequest(pendingRequest); // Set the pending request on the service
+                System.out.println("Found pending request for service: " + service.getTitle() + " with status: " + pendingRequest.getStatus());
+
+                // Set the pending request on the service
+                service.setPendingRequest(pendingRequest);
             } else {
-                service.setPendingRequest(null); // Ensure no stale data is present
+                service.setPendingRequest(null);
+                System.out.println("No pending request for service: " + service.getTitle());
             }
         }
 
-        return "provide-service"; // Return the provide-service view
+        // Add the services (with updated pending requests) to the model
+        model.addAttribute("services", services);
+        
+        // Return the "provide-service" view
+        return "provide-service";
     }
-
-
 
 
 }

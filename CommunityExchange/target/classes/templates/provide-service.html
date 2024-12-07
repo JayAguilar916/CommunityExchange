@@ -1,55 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Provide Service</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--    <h2>Services You Provide</h2>-->
-
-<!--    <table border="1">-->
-<!--        <thead>-->
-<!--            <tr>-->
-<!--                <th>Title</th>-->
-<!--                <th>Description</th>-->
-<!--                <th>Points</th>-->
-<!--                <th>Status</th>-->
-<!--            </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--             Loop through the services provided by the logged-in user -->
-<!--            <tr th:each="service : ${services}">-->
-<!--                <td th:text="${service.title}"></td>-->
-<!--                <td th:text="${service.description}"></td>-->
-<!--                <td th:text="${service.points}"></td>-->
-<!--                <td>-->
-<!--                     If there is a pending request for this service, show the Approve button -->
-<!--                    <div th:if="${service.pendingRequest != null}">-->
-<!--                        <p th:text="${service.pendingRequest.status}"></p>  Debugging line to check status -->
-<!--                         Always show the "Approve" button if there is a pending request -->
-<!--                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">-->
-<!--                            <button type="submit" th:if="${service.pendingRequest.status == 'Pending'}">Approve</button>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                     If there is no pending request, display a message or leave empty -->
-<!--                    <div th:if="${service.pendingRequest == null}">-->
-<!--                        <p>No pending requests</p>  Optional: Add a message when no request is pending -->
-<!--                    </div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-
-<!--     Button to create a new service -->
-<!--    <button onclick="window.location.href='/create-service'">Create Service</button>-->
-    
-<!--     Back button to go back to the Dashboard -->
-<!--    <button onclick="window.location.href='/dashboard'">BACK</button>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +15,7 @@
                 <th>Description</th>
                 <th>Points</th>
                 <th>Status</th>
-                <th>Action</th>  <!-- Added Action column for the approve button -->
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -79,18 +27,18 @@
                 <td>
                     <!-- Display the status of the service request -->
                     <div th:if="${service.pendingRequest != null}">
-                        <p th:text="${service.pendingRequest.status}"></p> <!-- Shows the status of the pending request -->
+                        <p th:text="${service.pendingRequest.status}"></p>
                     </div>
                     <div th:if="${service.pendingRequest == null}">
-                        <p>No pending requests</p> <!-- Optional: Message when no request is pending -->
+                        <p>No pending requests</p>
                     </div>
                 </td>
                 <td>
                     <!-- Always render the Approve button if there is a pending request -->
                     <div th:if="${service.pendingRequest != null}">
-                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
-                            <button type="submit">Approve</button>
-                        </form>
+						<form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+						    <button type="submit">Approve</button>
+						</form>
                     </div>
                 </td>
             </tr>
@@ -105,4 +53,3 @@
 
 </body>
 </html>
-
