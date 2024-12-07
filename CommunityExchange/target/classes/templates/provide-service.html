@@ -14,7 +14,7 @@
 <!--                <th>Title</th>-->
 <!--                <th>Description</th>-->
 <!--                <th>Points</th>-->
-<!--                <th>Action</th>-->
+<!--                <th>Status</th>-->
 <!--            </tr>-->
 <!--        </thead>-->
 <!--        <tbody>-->
@@ -27,9 +27,14 @@
 <!--                     If there is a pending request for this service, show the Approve button -->
 <!--                    <div th:if="${service.pendingRequest != null}">-->
 <!--                        <p th:text="${service.pendingRequest.status}"></p>  Debugging line to check status -->
+<!--                         Always show the "Approve" button if there is a pending request -->
 <!--                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">-->
 <!--                            <button type="submit" th:if="${service.pendingRequest.status == 'Pending'}">Approve</button>-->
 <!--                        </form>-->
+<!--                    </div>-->
+<!--                     If there is no pending request, display a message or leave empty -->
+<!--                    <div th:if="${service.pendingRequest == null}">-->
+<!--                        <p>No pending requests</p>  Optional: Add a message when no request is pending -->
 <!--                    </div>-->
 <!--                </td>-->
 <!--            </tr>-->
@@ -44,6 +49,7 @@
 
 <!--</body>-->
 <!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,6 +67,7 @@
                 <th>Description</th>
                 <th>Points</th>
                 <th>Status</th>
+                <th>Action</th>  <!-- Added Action column for the approve button -->
             </tr>
         </thead>
         <tbody>
@@ -70,17 +77,20 @@
                 <td th:text="${service.description}"></td>
                 <td th:text="${service.points}"></td>
                 <td>
-                    <!-- If there is a pending request for this service, show the Approve button -->
+                    <!-- Display the status of the service request -->
                     <div th:if="${service.pendingRequest != null}">
-                        <p th:text="${service.pendingRequest.status}"></p> <!-- Debugging line to check status -->
-                        <!-- Always show the "Approve" button if there is a pending request -->
-                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
-                            <button type="submit" th:if="${service.pendingRequest.status == 'Pending'}">Approve</button>
-                        </form>
+                        <p th:text="${service.pendingRequest.status}"></p> <!-- Shows the status of the pending request -->
                     </div>
-                    <!-- If there is no pending request, display a message or leave empty -->
                     <div th:if="${service.pendingRequest == null}">
-                        <p>No pending requests for this service.</p> <!-- Optional: Add a message when no request is pending -->
+                        <p>No pending requests</p> <!-- Optional: Message when no request is pending -->
+                    </div>
+                </td>
+                <td>
+                    <!-- Always render the Approve button if there is a pending request -->
+                    <div th:if="${service.pendingRequest != null}">
+                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+                            <button type="submit">Approve</button>
+                        </form>
                     </div>
                 </td>
             </tr>
