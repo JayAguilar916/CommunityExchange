@@ -174,32 +174,61 @@ public class HomeController {
     }
     
     // Show the Provide Service page
+//    @GetMapping("/provide-service")
+//    public String showProvideServicePage(Model model) {
+//        User user = (User) model.getAttribute("user");
+//
+//        if (user == null) {
+//            return "redirect:/login";  // Redirect to login if no user is logged in
+//        }
+//
+//        // Fetch the services provided by the logged-in user
+//        List<Service> services = serviceRepository.findByUser(user);
+//
+//        // Fetch the pending requests for each service
+//        for (Service service : services) {
+//            ServiceRequest request = serviceRequestRepository
+//                    .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
+//
+//            if (request != null) {
+//                service.setPendingRequest(request);  // Associate the pending request with the service
+//            } else {
+//                System.out.println("No pending request found for service: " + service.getTitle());
+//            }
+//        }
+//
+//        model.addAttribute("services", services);  // Add services to the model
+//        return "provide-service";  // Return the provide-service view
+//    }
+    
     @GetMapping("/provide-service")
     public String showProvideServicePage(Model model) {
         User user = (User) model.getAttribute("user");
-
         if (user == null) {
-            return "redirect:/login";  // Redirect to login if no user is logged in
+            return "redirect:/login"; // Redirect to login if no user is logged in
         }
 
         // Fetch the services provided by the logged-in user
         List<Service> services = serviceRepository.findByUser(user);
 
-        // Fetch the pending requests for each service
-        for (Service service : services) {
-            ServiceRequest request = serviceRequestRepository
-                    .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
+        // Add services to the model
+        model.addAttribute("services", services);
 
-            if (request != null) {
-                service.setPendingRequest(request);  // Associate the pending request with the service
+        // Check for pending requests and add to each service (only for display purposes)
+        for (Service service : services) {
+            ServiceRequest pendingRequest = serviceRequestRepository
+                .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
+
+            if (pendingRequest != null) {
+                service.setPendingRequest(pendingRequest); // Set the pending request on the service
             } else {
-                System.out.println("No pending request found for service: " + service.getTitle());
+                service.setPendingRequest(null); // Ensure no stale data is present
             }
         }
 
-        model.addAttribute("services", services);  // Add services to the model
-        return "provide-service";  // Return the provide-service view
+        return "provide-service"; // Return the provide-service view
     }
+
 
 
 

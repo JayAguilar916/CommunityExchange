@@ -77,9 +77,6 @@ public class Service {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
-
-//	TESTING
-//***********************************************************
     
 	public ServiceRequest getPendingRequest() {
 		return pendingRequest;
