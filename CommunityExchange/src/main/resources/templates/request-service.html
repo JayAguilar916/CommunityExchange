@@ -25,23 +25,17 @@
                 <td th:text="${service.description}"></td>
                 <td th:text="${service.points}"></td>
                 <td>
-                    <!-- Request Service Form -->
+                    <!-- Show Request button if this service is not already requested by the logged-in user -->
                     <form th:action="@{/request-service/{serviceId}(serviceId=${service.id})}" method="post">
-                        <button type="submit">Request</button>
+                        <button type="submit" th:if="${service.pendingRequest == null}">Request</button>
                     </form>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- [BACK] Button to go to the previous page -->
-    <button onclick="goBack()">[BACK]</button>
-
-    <script>
-        function goBack() {
-            window.history.back();  // This will navigate the user to the previous page
-        }
-    </script>
+    <!-- Back button goes to Provide Service page -->
+    <button onclick="window.location.href='/dashboard'">BACK</button>
 
 </body>
 </html>

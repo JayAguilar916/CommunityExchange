@@ -27,7 +27,8 @@ public class Service {
     @Column(name = "created_at")
     private String createdAt;
 
-    // Getters and setters
+    @Transient
+    private ServiceRequest pendingRequest; // This will hold the pending request (if any)
 
     public Long getId() {
         return id;
@@ -76,4 +77,16 @@ public class Service {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
+//	TESTING
+//***********************************************************
+    
+	public ServiceRequest getPendingRequest() {
+		return pendingRequest;
+	}
+
+	public void setPendingRequest(ServiceRequest pendingRequest) {
+		this.pendingRequest = pendingRequest;
+	}
+    
 }

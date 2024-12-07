@@ -8,7 +8,6 @@
 <body>
     <h2>Services You Provide</h2>
 
-    <!-- Table displaying the list of services provided by the logged-in user -->
     <table border="1">
         <thead>
             <tr>
@@ -19,31 +18,28 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Thymeleaf will loop through the services passed from the controller -->
+            <!-- Loop through the services provided by the logged-in user -->
             <tr th:each="service : ${services}">
                 <td th:text="${service.title}"></td>
                 <td th:text="${service.description}"></td>
                 <td th:text="${service.points}"></td>
                 <td>
-                    <!-- Approve Service Form -->
-                    <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
-                        <button type="submit">Approve</button>
-                    </form>
+                    <!-- If there is a pending request for this service, show the Approve button -->
+                    <div th:if="${service.pendingRequest != null}">
+                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+                            <button type="submit" th:if="${service.pendingRequest.status == 'PENDING'}">Approve</button>
+                            <span th:if="${service.pendingRequest.status == 'ACCEPTED'}">Approved</span>
+                        </form>
+                    </div>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- [Create Request] Button to create a new service -->
-    <button onclick="window.location.href='/create-service'">Create Request</button>
+	<button onclick="window.location.href='/create-service'">Create Service</button>
+	
+    <!-- Back button goes to the Dashboard page -->
+    <button onclick="window.location.href='/dashboard'">BACK</button>
 
-    <!-- [BACK] Button to go to the previous page -->
-    <button onclick="goBack()">[BACK]</button>
-
-    <script>
-        function goBack() {
-            window.history.back();  // This will navigate the user to the previous page
-        }
-    </script>
 </body>
 </html>
