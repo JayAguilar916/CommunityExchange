@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @SessionAttributes("user")  // This will store the logged-in user in session
@@ -145,9 +146,9 @@ public class HomeController {
         // Redirect back to the request-service page
         return "redirect:/request-service";
     }
-
+    
     @PostMapping("/approve-service/{serviceId}")
-    public String approveService(@PathVariable Long serviceId, Model model) {
+    public String approveService(@PathVariable Long serviceId, Model model, RedirectAttributes redirectAttributes) {
         Service service = serviceRepository.findById(serviceId).orElse(null);
         if (service == null) {
             return "redirect:/provide-service";  // Redirect if service is not found
@@ -158,26 +159,25 @@ public class HomeController {
             return "redirect:/provide-service";  // Redirect if no user is logged in
         }
 
-        // Log the details of the service and logged-in user to debug
-        System.out.println("Approving service request for serviceId: " + serviceId + " by user: " + loggedInUser.getUsername());
-
         // Find the first pending service request for the specified service
         ServiceRequest serviceRequest = serviceRequestRepository
                 .findByServiceAndStatus(service, ServiceRequest.Status.Pending);
 
         if (serviceRequest != null) {
-            System.out.println("Found pending request for service: " + service.getTitle() + " from user: " + serviceRequest.getUser().getUsername());
-
-            // Update the status to "ACCEPTED" regardless of who requested
+            // Update the status to "ACCEPTED"
             serviceRequest.setStatus(ServiceRequest.Status.Accepted);
             serviceRequestRepository.save(serviceRequest);  // Save the updated request
-            System.out.println("Service request status updated to ACCEPTED.");
+
+            // Add a success notification message to the redirect attributes
+            redirectAttributes.addFlashAttribute("notification", "Request approved successfully.");
         } else {
-            System.out.println("No pending request found for service: " + service.getTitle());
+            // If no pending request exists, add a different notification message
+            redirectAttributes.addFlashAttribute("notification", "No pending requests found.");
         }
 
         return "redirect:/provide-service";  // Redirect back to the provider's service page
     }
+
     
     @GetMapping("/provide-service")
     public String showProvideServicePage(Model model) {

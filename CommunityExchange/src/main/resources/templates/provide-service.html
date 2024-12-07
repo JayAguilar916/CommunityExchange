@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provide Service</title>
+    <style>
+        /* Basic styling for the notification */
+        .alert {
+            background-color: #4CAF50;  /* Green */
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .alert-danger {
+            background-color: #f44336;  /* Red for error */
+        }
+    </style>
 </head>
 <body>
     <h2>Services You Provide</h2>
+
+    <!-- Display the notification if it exists -->
+    <div th:if="${notification}" class="alert">
+        <p th:text="${notification}"></p>
+    </div>
 
     <table border="1">
         <thead>
@@ -19,13 +38,13 @@
             </tr>
         </thead>
         <tbody>
-<!--             Loop through the services provided by the logged-in user -->
+            <!-- Loop through the services provided by the logged-in user -->
             <tr th:each="service : ${services}">
                 <td th:text="${service.title}"></td>
                 <td th:text="${service.description}"></td>
                 <td th:text="${service.points}"></td>
                 <td>
-<!--                     Display the status of the service request -->
+                    <!-- Display the status of the service request -->
                     <div th:if="${service.pendingRequest != null}">
                         <p th:text="${service.pendingRequest.status}"></p>
                     </div>
@@ -34,21 +53,21 @@
                     </div>
                 </td>
                 <td>
-<!--                     Always render the Approve button if there is a pending request -->
+                    <!-- Always render the Approve button if there is a pending request -->
                     <div th:if="${service.pendingRequest != null}">
-						<form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
-						    <button type="submit">Approve</button>
-						</form>
+                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+                            <button type="submit">Approve</button>
+                        </form>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 
-<!--     Button to create a new service -->
+    <!-- Button to create a new service -->
     <button onclick="window.location.href='/create-service'">Create Service</button>
     
-<!--     Back button to go back to the Dashboard -->
+    <!-- Back button to go back to the Dashboard -->
     <button onclick="window.location.href='/dashboard'">BACK</button>
 
 </body>
