@@ -37,6 +37,13 @@ public class HomeController {
     public String showLoginPage() {
         return "login";  // Show login page
     }
+    
+    // Handle logout request
+    @PostMapping("/logout")
+    public String logout(Model model) {
+        model.addAttribute("user", null);  // Remove the user from the session
+        return "redirect:/login";  // Redirect to the login page after logging out
+    }
 
     // Handle login POST request
     @PostMapping("/login")
@@ -165,8 +172,7 @@ public class HomeController {
 
         return "redirect:/provide-service";  // Redirect back to the provider's service page
     }
-
-
+    
     // Show the Provide Service page
     @GetMapping("/provide-service")
     public String showProvideServicePage(Model model) {
@@ -184,12 +190,17 @@ public class HomeController {
             ServiceRequest request = serviceRequestRepository
                     .findByServiceAndUserAndStatus(service, user, ServiceRequest.Status.Pending);
 
-            service.setPendingRequest(request);  // Associate the pending request with the service
+            if (request != null) {
+                service.setPendingRequest(request);  // Associate the pending request with the service
+            } else {
+                System.out.println("No pending request found for service: " + service.getTitle());
+            }
         }
 
         model.addAttribute("services", services);  // Add services to the model
         return "provide-service";  // Return the provide-service view
     }
+
 
 
 }

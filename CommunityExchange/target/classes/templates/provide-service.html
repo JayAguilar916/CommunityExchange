@@ -25,12 +25,11 @@
                 <td th:text="${service.points}"></td>
                 <td>
                     <!-- If there is a pending request for this service, show the Approve button -->
-                    <div th:if="${service.pendingRequest != null}">
-                        <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
-                            <button type="submit" th:if="${service.pendingRequest.status == 'PENDING'}">Approve</button>
-                            <span th:if="${service.pendingRequest.status == 'ACCEPTED'}">Approved</span>
-                        </form>
-                    </div>
+					<div th:if="${service.pendingRequest != null and service.pendingRequest.status == 'Pending'}">
+					    <form th:action="@{/approve-service/{serviceId}(serviceId=${service.id})}" method="post">
+					        <button type="submit">Approve</button>
+					    </form>
+					</div>
                 </td>
             </tr>
         </tbody>
