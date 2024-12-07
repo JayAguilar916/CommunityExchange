@@ -18,5 +18,9 @@
         <button type="submit">Login</button>
     </form>
 
+    <p th:if="${error != null}" style="color: red;">
+        <span th:text="${error}">Invalid credentials!</span>
+    </p>
+
 </body>
 </html>

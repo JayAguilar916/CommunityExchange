@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
+@SessionAttributes("user")  // This will store the logged-in user in session
 public class HomeController {
 
     @Autowired
@@ -34,13 +36,15 @@ public class HomeController {
 
     // Handle login POST request
     @PostMapping("/login")
-    public String processLogin(@RequestParam String username, @RequestParam String password) {
-        // Add your login logic here (replace with real login logic)
-        User user = userRepository.findByUsername(username);  // Find user by username
+    public String processLogin(@RequestParam String username, @RequestParam String password, Model model) {
+        // Find user by username from the database
+        User user = userRepository.findByUsername(username);
         
-        if (user != null && user.getPassword().equals(password)) {  // Check password
+        if (user != null && user.getPassword().equals(password)) {  // Check password directly
+            model.addAttribute("user", user);  // Store the logged-in user in the model (and session)
             return "redirect:/dashboard";  // Redirect to dashboard after successful login
         } else {
+            model.addAttribute("error", "Invalid credentials!");  // Show error message on failure
             return "login";  // Stay on login page if credentials are invalid
         }
     }
@@ -51,11 +55,11 @@ public class HomeController {
         return "dashboard";  // Show dashboard page
     }
     
- // Show the Provide Service page and list the services the user offers
+    // Show the Provide Service page and list the services the user offers
     @GetMapping("/provide-service")
     public String showProvideServicePage(Model model) {
-        // Get the logged-in user (using a placeholder username here for now)
-        User user = userRepository.findByUsername("pass");  // Replace with actual logged-in user logic
+        // Get the logged-in user (from session)
+        User user = (User) model.getAttribute("user");
 
         if (user != null) {
             // Fetch all the services provided by the logged-in user
@@ -65,15 +69,15 @@ public class HomeController {
         return "provide-service";  // Return the provide-service view
     }
     
- // Handle service approval (for service requests)
+    // Handle service approval (for service requests)
     @PostMapping("/approve-service/{serviceId}")
     public String approveService(@PathVariable Long serviceId, Model model) {
         // Find the service by serviceId
         Service service = serviceRepository.findById(serviceId).orElse(null);
         
         if (service != null) {
-            // Assuming you have the logged-in user (replace this with actual logic)
-            User loggedInUser = userRepository.findByUsername("pass");  // Replace with actual logged-in user logic
+            // Get the logged-in user dynamically from session
+            User loggedInUser = (User) model.getAttribute("user");
 
             if (loggedInUser != null) {
                 // Find the pending service request for this service and user
@@ -94,15 +98,14 @@ public class HomeController {
     // Show the Create Service page (form) - GET request handler
     @GetMapping("/create-service")
     public String showCreateServiceForm(Model model) {
-        // Add any necessary model attributes for the create service page (if needed)
         return "create-service";  // Return the view name for creating a new service
     }
     
     // Handle service creation (for adding new services)
     @PostMapping("/create-service")
     public String createService(@RequestParam String title, @RequestParam String description, @RequestParam int points, Model model) {
-        // Assuming the user is logged in (replace with actual user lookup)
-        User user = userRepository.findByUsername("pass");
+        // Get the logged-in user dynamically from the session
+        User user = (User) model.getAttribute("user");
 
         if (user != null) {
             Service service = new Service();
@@ -127,17 +130,12 @@ public class HomeController {
     @PostMapping("/request-service/{serviceId}")
     public String requestService(@PathVariable Long serviceId, Model model) {
         // Handle the logic for requesting the service, e.g., create a service request for the logged-in user
-        // You can fetch the service by its ID and process the request
-
         Service service = serviceRepository.findById(serviceId).orElse(null);
         if (service != null) {
             // Logic to handle the request, e.g., saving a request to the database
-            // You could save this request in a service request entity or process as needed
             System.out.println("Service requested: " + service.getTitle());
         }
 
         return "redirect:/request-service";  // Redirect back to the Request Service page
     }
-
-    
 }
