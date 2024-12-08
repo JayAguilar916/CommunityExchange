@@ -1,5 +1,7 @@
 package com.spring.jpa.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,7 +16,7 @@ public class User {
     private Long userId;  // Make this the primary key
     
     @Column(name = "username")
-    private String username;  // Regular column
+    private String username;
     
     @Column(name = "email")
     private String email;
@@ -25,9 +27,28 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    // Getters and setters
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    private String formattedCreatedAt;
+    
+    public String getFormattedCreatedAt() {
+        return formattedCreatedAt;
+    }
 
-    public Long getUserId() {
+    public void setFormattedCreatedAt(String formattedCreatedAt) {
+        this.formattedCreatedAt = formattedCreatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Long getUserId() {
         return userId;
     }
 
