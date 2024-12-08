@@ -220,5 +220,11 @@ public class HomeController {
         return "admin";  // This returns the admin.html view
     }
     
+    @GetMapping("/manage-users")
+    public String showManageUsersPage() {
+        return "manage-users";  // This will return the manage-users.html view
+    }
 
+    
+    
 }
