@@ -214,5 +214,11 @@ public class HomeController {
         return "provide-service";
     }
 
+    // Admin page route
+    @GetMapping("/admin")
+    public String showAdminPage() {
+        return "admin";  // This returns the admin.html view
+    }
+    
 
 }
